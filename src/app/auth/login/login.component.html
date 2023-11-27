@@ -1,0 +1,11 @@
+<form [formGroup]="loginForm">
+  <label for="email">Email</label>
+  <input type="email" name="email" id="email" formControlName="email">
+
+  <label for="password">Password</label>
+  <input type="password" name="password" id="password" formControlName="password">
+
+  <button (click)="onLoginClicked()" [disabled]="loginForm.invalid">Login</button>
+
+  <a href="register">Don't have an Account? Register Now!!!</a>
+</form>
