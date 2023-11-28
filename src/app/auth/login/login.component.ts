@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
+import {AuthService} from "../auth.service";
 
 @Component({
   selector: 'app-login',
@@ -10,7 +11,9 @@ import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
-  constructor(private fb: FormBuilder) {
+  isLoading = false;
+
+  constructor(private fb: FormBuilder, private authService: AuthService) {
   }
 
   loginForm = this.fb.group({
@@ -19,9 +22,23 @@ export class LoginComponent {
   })
 
   onLoginClicked() {
+
     //TODO:: implement modal
     if (!this.loginForm.valid) return
 
-    console.log(this.loginForm);
+    this.isLoading = true;
+    const email = this.loginForm.controls['email'].value ?? '';
+    const password = this.loginForm.controls['password'].value ?? '';
+
+    this.authService.login(email,password).subscribe({
+      next: (user) => {
+        console.log(user)
+      },
+      error: (err): void => {
+        console.log(err.code);
+        console.log(err.message);
+      }
+    })
+
   }
 }
