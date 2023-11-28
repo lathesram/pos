@@ -1,59 +1,61 @@
 import {Injectable} from "@angular/core";
 import {
-    Auth,
-    createUserWithEmailAndPassword,
-    deleteUser,
-    sendEmailVerification,
-    signInWithEmailAndPassword,
-    User
+  Auth,
+  createUserWithEmailAndPassword,
+  deleteUser,
+  sendEmailVerification,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  User,
+  UserCredential
 } from "@angular/fire/auth";
-import {from} from "rxjs";
+import {from, Observable} from "rxjs";
 
 @Injectable({
-    providedIn: "root"
+  providedIn: "root"
 })
 export class AuthService {
-    constructor(private auth: Auth) {
-    }
+  constructor(private auth: Auth) {
+  }
 
-    register(email: string, password: string) {
-        return from(createUserWithEmailAndPassword(this.auth, email, password));
-    }
+  register(email: string, password: string): Observable<UserCredential> {
+    return from(createUserWithEmailAndPassword(this.auth, email, password));
+  }
 
-    verfiyEmail(loggedInUser: User) {
-        return from(sendEmailVerification(loggedInUser))
-    }
+  verfiyEmail(loggedInUser: User): Observable<void> {
+    return from(sendEmailVerification(loggedInUser))
+  }
 
-    login(email: string, password: string) {
-        return from(signInWithEmailAndPassword(this.auth, email, password));
-    }
+  login(email: string, password: string): Observable<UserCredential> {
+    return from(signInWithEmailAndPassword(this.auth, email, password));
+  }
 
-    getLoggedInUser() {
-        // onAuthStateChanged(this.auth, (user) => {
-        //     if(user) {
-        //         return user.uid
-        //     } else {
-        //         return ''
-        //     }
-        // })
+  getLoggedInUser(): User | null {
+    // onAuthStateChanged(this.auth, (user) => {
+    //     if(user) {
+    //         return user.uid
+    //     } else {
+    //         return ''
+    //     }
+    // })
 
-        return this.auth.currentUser;
-    }
+    return this.auth.currentUser;
+  }
 
-    logout() {
+  logout() {
 
-    }
+  }
 
-    forgetPassword(email: string) {
+  resetPassword(email: string): Observable<void> {
+    return from(sendPasswordResetEmail(this.auth, email))
+  }
 
-    }
+  deleteUser(user: User) {
+    return from(deleteUser(user))
+  }
 
-    deleteUser(user: User) {
-        return from(deleteUser(user))
-    }
-
-    private isUserAlreadyExist(email: string) {
-    }
+  private isUserAlreadyExist(email: string) {
+  }
 
 
 }
